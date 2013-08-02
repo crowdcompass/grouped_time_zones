@@ -54,4 +54,15 @@ describe GroupedTimeZones::ViewHelpers do
       opt_groups.last.attributes['label'].value.should eq 'Other'
     end
   end
+
+  describe 'zone_from_group_or_any_for_identifier' do
+    
+    it "returns the TZ from the grouped TZs" do
+      zone_from_group_or_any_for_identifier("Pacific/Honolulu").should =~ / Hawaii/
+    end
+
+    it "falls back on all TZs" do
+      zone_from_group_or_any_for_identifier("Hawaii").should =~ / Hawaii/
+    end
+  end
 end

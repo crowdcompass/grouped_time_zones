@@ -13,6 +13,14 @@ module GroupedTimeZones
       return [['United States', zone_options.call(us_zones)], ['Other', zone_options.call(non_us_zones)]]
     end
 
+    def zone_from_group_or_any_for_identifier(ident, force_uniq=false)
+      us_zones      = ActiveSupport::TimeZone.us_zones
+      non_us_zones  = other_zones(us_zones, force_uniq)
+      filtered_zones = us_zones + non_us_zones
+      map = {}.tap { |h| filtered_zones.each { |z| h[z.tzinfo.identifier] = z.to_s } }
+      map[ident] || ActiveSupport::TimeZone[ident].to_s
+    end
+
     private
 
     def other_zones(excluded_zones, force_uniq=false)
