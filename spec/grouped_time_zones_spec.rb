@@ -4,13 +4,21 @@ require 'nokogiri'
 describe GroupedTimeZones::ViewHelpers do
   include GroupedTimeZones::ViewHelpers
 
+  let!(:us_zones) { ActiveSupport::TimeZone.us_zones }
+  let!(:all_zones) { ActiveSupport::TimeZone.all }
+  let(:non_us_zones) { all_zones - us_zones }
+  let(:non_us_uniq_zones) do
+    (all_zones.uniq { |tz| tz.tzinfo.identifier }) - us_zones
+  end
+  let(:all_uniq_zones) { non_us_uniq_zones + us_zones }
+
   it "should return an array of time zones grouped by USA first and then other" do
     result = grouped_time_zones
     result[0][0].should == 'United States'
-    result[0][1].should have(8).items
+    result[0][1].should have(us_zones.count).items
     result[0][1][0][0].should =~ /\(GMT-\d{2}:\d{2}\)/
     result[1][0].should == 'Other'
-    result[1][1].should have(136).items
+    result[1][1].should have(non_us_zones.count).items
   end
 
   it "time_zone_select should return a select html tag" do
@@ -18,7 +26,7 @@ describe GroupedTimeZones::ViewHelpers do
 
     result = Nokogiri::HTML.parse grouped_time_zone_select('user', :time_zone, user)
 
-    result.css('select option').count.should be 144
+    result.css('select option').should have(all_zones.count).items
     selected = result.css('select option[selected="selected"]')
     selected.should have(1).item
     selected.first.attributes['value'].value.should eq 'Pacific/Honolulu'
@@ -32,18 +40,18 @@ describe GroupedTimeZones::ViewHelpers do
   context "Unique Zones Only" do
     it "should return an array of unique named time zones grouped by USA and then Other" do
       result = grouped_time_zones(true)
-        result[0][0].should == 'United States'
-      result[0][1].should have(8).items
+      result[0][0].should == 'United States'
+      result[0][1].should have(us_zones.count).items
       result[0][1][0][0].should =~ /\(GMT-\d{2}:\d{2}\)/
-        result[1][0].should == 'Other'
-      result[1][1].should have(117).items
+      result[1][0].should == 'Other'
+      result[1][1].should have(non_us_uniq_zones.count).items
     end
 
     it "time_zone_select should return a select html tag with unique option values" do
       user = double("user", time_zone: 'Pacific/Honolulu')
 
       result = Nokogiri::HTML.parse grouped_time_zone_select('user', :time_zone, user, true)
-      result.css('select option').count.should be 125
+      result.css('select option').should have(all_uniq_zones.count).items
       selected = result.css('select option[selected="selected"]')
       selected.should have(1).item
       selected.first.attributes['value'].value.should eq 'Pacific/Honolulu'
