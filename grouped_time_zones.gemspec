@@ -2,7 +2,7 @@
 require File.expand_path('../lib/grouped_time_zones/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Sean McCleary"]
+  gem.authors       = ["Sean McCleary", "William Clifford"]
   gem.email         = ["seanmcc@gmail.com"]
   gem.description   = %q{Simple gem to take a grouped time zone selector for Rails}
   gem.summary       = %q{This has only been tested with Rails 3}
@@ -15,8 +15,9 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = GroupedTimeZones::VERSION
 
-  gem.add_dependency "rails", "~>3"
-  gem.add_development_dependency "rspec", "~>2.9.0"
+  gem.add_dependency "rails", "~>4.0"
+  gem.add_development_dependency "rspec", "~>3.0"
+  gem.add_development_dependency "rspec-collection_matchers"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-nav"
   gem.add_development_dependency "nokogiri"
