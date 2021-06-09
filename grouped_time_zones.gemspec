@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = GroupedTimeZones::VERSION
 
-  gem.add_dependency "rails", "~>4.0"
+  gem.add_dependency "rails", "~> 5.0"
   gem.add_development_dependency "rspec", "~>3.0"
   gem.add_development_dependency "rspec-collection_matchers"
   gem.add_development_dependency "pry"
